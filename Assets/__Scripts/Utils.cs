@@ -1,7 +1,11 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 public class Utils : MonoBehaviour
 {
+
     static public Vector3 Bezier(float u, params Vector3[] points){
         Vector3[,] vArr = new Vector3[points.Length, points.Length];
         int r = points.Length - 1;
@@ -14,5 +18,19 @@ public class Utils : MonoBehaviour
             }
         }
         return vArr[0,0];
+    }
+
+    // Materials Functions
+    // returns a list of all materials on this GameObject and its children
+
+    static public Material[] GetALlMaterials( GameObject go ) {
+        Renderer[] rends = go.GetComponentsInChildren<Renderer>();
+
+        Material[] mats = new Material[rends.Length];
+        for (int i = 0; i < rends.Length; i++) {
+            mats[i] = rends[i].material;
+        }
+
+        return mats;
     }
 }
