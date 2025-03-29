@@ -7,11 +7,16 @@ public class Main : MonoBehaviour
 {
     static private Main S; // a private singleton for Main
 
+    static private Dictionary<eWeaponType, WeaponDefinition> WEAP_DICT;
+
     [Header("Inscribed")]
+    public bool spawnEnemies = true;
     public GameObject[] prefabEnemies; // array of enemy prefabs
     public float enemySpawnPerSecond = 0.5f; // # enemies spawned/second
     public float enemyInsetDefault = 1.5f; // inset from the sides
     public float gameRestartDelay = 2;
+
+    public WeaponDefinition[] weaponDefinitions;
 
     private BoundsCheck bndCheck;
 
@@ -23,9 +28,28 @@ public class Main : MonoBehaviour
 
         // invoke spawnenemy() once (in 2 seconds, based on default values)
         Invoke ( nameof(SpawnEnemy), 1f/enemySpawnPerSecond );
+
+        WEAP_DICT = new Dictionary<eWeaponType, WeaponDefinition>();
+        foreach(WeaponDefinition def in weaponDefinitions){
+            WEAP_DICT[def.type] = def;
+        }
+    }
+
+    static public WeaponDefinition GET_WEAPON_DEFINITION(eWeaponType wt){
+        if (WEAP_DICT.ContainsKey(wt)){
+            return (WEAP_DICT[wt]);
+        }
+
+        return(new WeaponDefinition());
     }
 
     public void SpawnEnemy() {
+
+        if(!spawnEnemies){
+            Invoke(nameof(SpawnEnemy), 1f / enemySpawnPerSecond);
+            return;
+
+        }
         // pick a random enemy prefab to instantiate 
         int ndx = Random.Range(0, prefabEnemies.Length);
         GameObject go = Instantiate<GameObject>( prefabEnemies[ ndx ] );
