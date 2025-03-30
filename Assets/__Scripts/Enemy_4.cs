@@ -7,6 +7,8 @@ using UnityEngine.UIElements.Experimental;
 public class Enemy_4 : Enemy
 {
 
+    //public Score scoreCounter;
+
     [Header("Enemy_4 Inscribed Fields")]
     public float duration = 4; // duration of interpolation movement
     private EnemyShield[] allShields;
@@ -22,6 +24,9 @@ public class Enemy_4 : Enemy
 
         p0 = p1 = pos;
         InitMovement();
+
+         GameObject scoreGO = GameObject.Find("ScoreCounter");
+        scoreCounter = scoreGO.GetComponent<Score>();
     }
 
     void InitMovement() {
@@ -60,7 +65,7 @@ public class Enemy_4 : Enemy
         pos = (1-u)*p0 + u*p1; // simple linear interpolation
     }
 
-    void OCollisionEnter( Collision coll ) 
+    void OnCollisionEnter( Collision coll ) 
     {
         GameObject otherGO = coll.gameObject;
 
@@ -96,6 +101,7 @@ public class Enemy_4 : Enemy
 
                 // destroy this enemy_4
                 Destroy( gameObject );
+                scoreCounter.score += 400;
             }
             else {
                 Debug.Log( "Enemy_4 hit by non-ProjectileHero: " + otherGO.name );

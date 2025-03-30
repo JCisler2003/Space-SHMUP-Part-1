@@ -32,6 +32,7 @@ public class Hero : MonoBehaviour
         //fireEvent += TempFire;
 
         // reset the weapons to start _Hero with 1 blaster
+
         ClearWeapons();
         weapons[0].SetType(eWeaponType.blaster);
         

@@ -3,6 +3,8 @@ using UnityEngine;
 public class Enemy_3 : Enemy
 {
 
+    //public Score scoreCounter;
+
     [Header("Enemy_3 Inscribed Fields")]
     public float lifeTime = 5;
     public Vector2 midpointYRange = new Vector2(1.5f, 3);
@@ -35,6 +37,9 @@ public class Enemy_3 : Enemy
         birthTime = Time.time;
 
         if (drawDebugInfo) drawDebug();
+
+         GameObject scoreGO = GameObject.Find("ScoreCounter");
+        scoreCounter = scoreGO.GetComponent<Score>();
         
     }
 
@@ -68,6 +73,35 @@ public class Enemy_3 : Enemy
             Debug.DrawLine(prevPoint, pt, col, lifeTime);
             prevPoint = pt;
         }
+    }
+
+    void OnCollisionEnter( Collision coll ){
+        GameObject otherGO = coll.gameObject;
+
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null){
+
+            //Debug.Log("Weapon successfully subscribed to fireEvent.");
+
+            if (bndCheck.isOnScreen){
+                health -= Main.GET_WEAPON_DEFINITION(p.type).damageOnHit;
+                if (health <= 0){
+                    // tell main that this ship was destroyed
+                    if (!calledShipDestroyed) {
+                        calledShipDestroyed = true;
+                        Main.SHIP_DESTROYED( this );
+                    }
+                    Destroy(this.gameObject);
+                    scoreCounter.score += 300;
+                }
+            }
+            Destroy(otherGO);
+        }
+        else{
+            print("Enemy hit by non-ProjectileHero: " + otherGO.name);
+        }
+
+       
     }
 
 }

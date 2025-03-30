@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Space-SHMUP-Part-1.sln"
+    "dotnet.defaultSolution": "Space SHMUP Part 1.sln"
 }

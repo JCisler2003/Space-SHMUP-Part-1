@@ -6,6 +6,7 @@ using UnityEngine.Scripting.APIUpdating;
 
 public class Enemy : MonoBehaviour
 {
+    public Score scoreCounter;
     [Header("Inscribed")]
 
     public float speed = 10f; // the movement speed is 10m/s
@@ -17,6 +18,13 @@ public class Enemy : MonoBehaviour
     protected bool calledShipDestroyed = false;
 
     protected BoundsCheck bndCheck;
+
+    void Start()
+    {
+        GameObject scoreGO = GameObject.Find("ScoreCounter");
+        scoreCounter = scoreGO.GetComponent<Score>();
+        
+    }
 
     void Awake()
     {
@@ -81,6 +89,7 @@ public class Enemy : MonoBehaviour
                         Main.SHIP_DESTROYED( this );
                     }
                     Destroy(this.gameObject);
+                    scoreCounter.score += 100;
                 }
             }
             Destroy(otherGO);
@@ -88,5 +97,6 @@ public class Enemy : MonoBehaviour
         else{
             print("Enemy hit by non-ProjectileHero: " + otherGO.name);
         }
+        
     }
 }

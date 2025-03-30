@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Enemy_2 : Enemy
 {
+    //public Score scoreCounter;
 
     [Header("Enemy_2 Inscribed Fields")]
     public float lifeTime = 10;
@@ -35,6 +36,9 @@ public class Enemy_2 : Enemy
         transform.LookAt(p1, Vector3.back);
         baseRotation = transform.rotation;
 
+         GameObject scoreGO = GameObject.Find("ScoreCounter");
+        scoreCounter = scoreGO.GetComponent<Score>();
+
         
     }
 
@@ -55,4 +59,33 @@ public override void Move(){
 
     pos = (1-u)*p0 + u*p1;
 }
+
+void OnCollisionEnter( Collision coll ){
+        GameObject otherGO = coll.gameObject;
+
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null){
+
+            //Debug.Log("Weapon successfully subscribed to fireEvent.");
+
+            if (bndCheck.isOnScreen){
+                health -= Main.GET_WEAPON_DEFINITION(p.type).damageOnHit;
+                if (health <= 0){
+                    // tell main that this ship was destroyed
+                    if (!calledShipDestroyed) {
+                        calledShipDestroyed = true;
+                        Main.SHIP_DESTROYED( this );
+                    }
+                    Destroy(this.gameObject);
+                    scoreCounter.score += 300;
+                }
+            }
+            Destroy(otherGO);
+        }
+        else{
+            print("Enemy hit by non-ProjectileHero: " + otherGO.name);
+        }
+
+       
+    }
 }

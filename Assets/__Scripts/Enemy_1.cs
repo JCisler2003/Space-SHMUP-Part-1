@@ -3,6 +3,8 @@ using UnityEngine;
 public class Enemy_1 : Enemy
 {
 
+    //public Score scoreCounter;
+
     [Header("Enemy_1 Inscribed Fields")]
     [Tooltip("# of seconds for a full sine wave")]
     public float waveFrequency = 2;
@@ -19,6 +21,9 @@ public class Enemy_1 : Enemy
         x0 = pos.x;
 
         birthTime = Time.time;
+
+         GameObject scoreGO = GameObject.Find("ScoreCounter");
+        scoreCounter = scoreGO.GetComponent<Score>();
         
     }
 
@@ -37,6 +42,35 @@ public class Enemy_1 : Enemy
         base.Move();
 
         print(bndCheck.isOnScreen);
+    }
+
+    void OnCollisionEnter( Collision coll ){
+        GameObject otherGO = coll.gameObject;
+
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null){
+
+            //Debug.Log("Weapon successfully subscribed to fireEvent.");
+
+            if (bndCheck.isOnScreen){
+                health -= Main.GET_WEAPON_DEFINITION(p.type).damageOnHit;
+                if (health <= 0){
+                    // tell main that this ship was destroyed
+                    if (!calledShipDestroyed) {
+                        calledShipDestroyed = true;
+                        Main.SHIP_DESTROYED( this );
+                    }
+                    Destroy(this.gameObject);
+                    scoreCounter.score += 200;
+                }
+            }
+            Destroy(otherGO);
+        }
+        else{
+            print("Enemy hit by non-ProjectileHero: " + otherGO.name);
+        }
+
+       
     }
 
    
